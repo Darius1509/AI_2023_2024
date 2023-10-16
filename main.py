@@ -80,27 +80,15 @@ def move(state, direction):
     i, j = get_zero_position(state)
     if valid_transition(state, direction):
         if direction == "up":
-            if i == 0:
-                return None
-            else:
                 state[i][j], state[i - 1][j] = state[i - 1][j], state[i][j]
                 previous_value = state[i][j]
         elif direction == "down":
-            if i == 2:
-                return None
-            else:
                 state[i][j], state[i + 1][j] = state[i + 1][j], state[i][j]
                 previous_value = state[i][j]
         elif direction == "left":
-            if j == 0:
-                return None
-            else:
                 state[i][j], state[i][j - 1] = state[i][j - 1], state[i][j]
                 previous_value = state[i][j]
         elif direction == "right":
-            if j == 2:
-                return None
-            else:
                 state[i][j], state[i][j + 1] = state[i][j + 1], state[i][j]
                 previous_value = state[i][j]
     return state  # Return the modified state
@@ -127,7 +115,7 @@ def DLS(src, target, depth, visited):
 visited_states = set()
 
 initial_state = [
-    [8, 6, 7], 
+    [8, 6, 7],
     [2, 5, 4], 
     [0, 3, 1]
 ]
@@ -139,7 +127,7 @@ initial_state1 = [
 ]
 
 initial_state2 = [
-    [2, 7, 5], 
+    [2, 7, 5],
     [0, 8, 4], 
     [3, 1, 6]
 ]
@@ -150,22 +138,14 @@ goal_state = [
     [7, 8, 0]
 ]
 
+def run(state, goal, max_depth):
+    if initialize_problem_state(state) != None:
+        result = IDDFS(state, goal, max_depth)
+        if result:
+            print("Solution found")
+        else:
+            print("Solution not found")
 
-result = IDDFS(initial_state, goal_state, 15)
-if result:
-    print("Solution found")
-else:
-    print("Solution not found")
-
-
-result1 = IDDFS(initial_state1, goal_state, 15)
-if result1:
-    print("Solution found")
-else:
-    print("Solution not found")
-
-result2 = IDDFS(initial_state2, goal_state, 15)
-if result2:
-    print("Solution found")
-else:
-    print("Solution not found")
+run(initial_state, goal_state, 15)
+run(initial_state1, goal_state, 15)
+run(initial_state2, goal_state, 15)
