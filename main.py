@@ -11,7 +11,6 @@
 # ]
 
 #2.
-
 def is_valid_state(state):    
     #dimensiunea matricei trebuie să fie 3x3
     if len(state) != 3 or any(len(row) != 3 for row in state):
@@ -49,3 +48,62 @@ state1 = [
 ]
 print(is_goal_state(state1))  # Should return True
 """
+
+#3.
+previous_value = 0
+def get_zero_position(state):
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] == 0:
+                return (i, j)
+
+def valid_transition(state, direction):
+    global previous_value
+    i, j = get_zero_position(state)
+    if direction == "up":
+        if i == 0 or state[i - 1][j] == previous_value:
+            return False
+    elif direction == "down":
+        if i == 2 or state[i + 1][j] == previous_value:
+            return False
+    elif direction == "left":
+        if j == 0 or state[i][j - 1] == previous_value:
+            return False
+    elif direction == "right":
+        if j == 2 or state[i][j + 1] == previous_value:
+            return False
+    else:
+        return True
+
+def move(state, direction):
+    global previous_value
+    i, j = get_zero_position(state)
+    if valid_transition(state,direction):
+        if direction == "up":
+            if i == 0:
+                return None
+            else:
+                state[i][j], state[i - 1][j] = state[i - 1][j], state[i][j]
+                previous_value = state[i][j]
+        elif direction == "down":
+            if i == 2:
+                return None
+            else:
+                state[i][j], state[i + 1][j] = state[i + 1][j], state[i][j]
+                previous_value = state[i][j]
+        elif direction == "left":
+            if j == 0:
+                return None
+            else:
+                state[i][j], state[i][j - 1] = state[i][j - 1], state[i][j]
+                previous_value = state[i][j]
+        elif direction == "right":
+            if j == 2:
+                return None
+            else:
+                state[i][j], state[i][j + 1] = state[i][j + 1], state[i][j]
+                previous_value = state[i][j]
+        else:
+            return None
+
+    return state
