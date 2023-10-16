@@ -50,7 +50,7 @@ print(is_goal_state(state1))  # Should return True
 """
 
 #3.
-previous_value = 0
+previous_value = None
 def get_zero_position(state):
     for i in range(3):
         for j in range(3):
@@ -72,13 +72,13 @@ def valid_transition(state, direction):
     elif direction == "right":
         if j == 2 or state[i][j + 1] == previous_value:
             return False
-    else:
-        return True
+    return True
+
 
 def move(state, direction):
     global previous_value
     i, j = get_zero_position(state)
-    if valid_transition(state,direction):
+    if valid_transition(state, direction):
         if direction == "up":
             if i == 0:
                 return None
@@ -103,7 +103,69 @@ def move(state, direction):
             else:
                 state[i][j], state[i][j + 1] = state[i][j + 1], state[i][j]
                 previous_value = state[i][j]
-        else:
-            return None
+    return state  # Return the modified state
 
-    return state
+def IDDFS(src, target, max_depth):
+    for depth in range(max_depth + 1):
+        visited_states = set()
+        if DLS(src, target, depth, visited_states):
+            return True
+    return False
+
+def DLS(src, target, depth, visited):
+    if depth == 0 and src == target:
+        return True
+    if depth > 0:
+        visited.add(tuple(map(tuple, src)))  # Add the state (as a tuple) to the visited set
+        for direction in ["up", "down", "left", "right"]:
+            new_state = move(list(map(list, src)), direction)  # Create a copy of the state
+            if tuple(map(tuple, new_state)) not in visited:
+                if DLS(new_state, target, depth - 1, visited):
+                    return True
+    return False
+
+visited_states = set()
+
+initial_state = [
+    [8, 6, 7], 
+    [2, 5, 4], 
+    [0, 3, 1]
+]
+
+initial_state1 = [
+    [2, 5, 3], 
+    [1, 0, 6], 
+    [4, 7, 8]
+]
+
+initial_state2 = [
+    [2, 7, 5], 
+    [0, 8, 4], 
+    [3, 1, 6]
+]
+
+goal_state = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 0]
+]
+
+
+result = IDDFS(initial_state, goal_state, 15)
+if result:
+    print("Solution found")
+else:
+    print("Solution not found")
+
+
+result1 = IDDFS(initial_state1, goal_state, 15)
+if result1:
+    print("Solution found")
+else:
+    print("Solution not found")
+
+result2 = IDDFS(initial_state2, goal_state, 15)
+if result2:
+    print("Solution found")
+else:
+    print("Solution not found")
