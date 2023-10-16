@@ -34,10 +34,9 @@ def initialize_problem_state(initial_state):
         print("Starea inițială nu este validă.")
         return None
 
-def is_goal_state(state):
-    elements = [element for row in state for element in row if element != 0]
-
-    return elements == list(range(1, len(elements) + 1))
+def is_goal_state(matrix):
+    numbers = [element for row in matrix for element in row if element != 0]
+    return numbers == list(range(1, len(numbers) + 1))
 
 """
 # Test 1: Goal state with numbers in ascending order (excluding 0)
@@ -74,7 +73,6 @@ def valid_transition(state, direction):
             return False
     return True
 
-
 def move(state, direction):
     global previous_value
     i, j = get_zero_position(state)
@@ -93,24 +91,36 @@ def move(state, direction):
                 previous_value = state[i][j]
     return state  # Return the modified state
 
-def IDDFS(src, target, max_depth):
+
+#4.
+
+def IDDFS(src, max_depth):
     for depth in range(max_depth + 1):
         visited_states = set()
-        if DLS(src, target, depth, visited_states):
+        if DLS(src, depth, visited_states):
             return True
     return False
 
-def DLS(src, target, depth, visited):
-    if depth == 0 and src == target:
+def DLS(src, depth, visited):
+    if depth == 0 and is_goal_state(src):
         return True
     if depth > 0:
         visited.add(tuple(map(tuple, src)))  # Add the state (as a tuple) to the visited set
         for direction in ["up", "down", "left", "right"]:
             new_state = move(list(map(list, src)), direction)  # Create a copy of the state
             if tuple(map(tuple, new_state)) not in visited:
-                if DLS(new_state, target, depth - 1, visited):
+                if DLS(new_state, depth - 1, visited):
                     return True
     return False
+
+def run(state, max_depth):
+    initialized_state = initialize_problem_state(state)
+    if initialized_state is not None:
+        result = IDDFS(initialized_state, max_depth)
+        if result:
+            print("Solution found")
+        else:
+            print("Solution not found")
 
 visited_states = set()
 
@@ -132,20 +142,6 @@ initial_state2 = [
     [3, 1, 6]
 ]
 
-goal_state = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 0]
-]
-
-def run(state, goal, max_depth):
-    if initialize_problem_state(state) != None:
-        result = IDDFS(state, goal, max_depth)
-        if result:
-            print("Solution found")
-        else:
-            print("Solution not found")
-
-run(initial_state, goal_state, 15)
-run(initial_state1, goal_state, 15)
-run(initial_state2, goal_state, 15)
+run(initial_state, 15)
+run(initial_state1, 15)
+run(initial_state2, 15)
