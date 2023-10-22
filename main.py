@@ -93,7 +93,6 @@ def move(state, direction):
 
 
 #4.
-
 def IDDFS(src, max_depth):
     for depth in range(max_depth + 1):
         visited_states = set()
@@ -142,6 +141,73 @@ initial_state2 = [
     [3, 1, 6]
 ]
 
+"""
 run(initial_state, 15)
 run(initial_state1, 15)
 run(initial_state2, 15)
+"""
+#5
+def manhattan_distance(state):
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+            num = state[i][j]
+            if num != 0:
+                target_i, target_j = num // 3, num % 3
+                distance += abs(i - target_i) + abs(j - target_j)
+    return distance
+
+def hamming_distance(state):
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+            num = state[i][j]
+            if num != 0 and num != i * 3 + j + 1:
+                distance += 1
+    return distance
+
+#heuristic that calculates the number of swaps required to move the elements from their current positions to their correct positions
+def max_swap(state):
+    max_swaps = 0
+
+    for i in range(3):
+        for j in range(3):
+            num = state[i][j]
+            if num != 0:
+                target_i, target_j = num // 3, num % 3
+                distance = abs(i - target_i) + abs(j - target_j)
+                max_swaps = max(max_swaps, distance)
+
+    return max_swaps
+
+def greedy_best_search(state, heuristic):
+    visited_states = set()
+    queue = [(state, 0)]  # Coada ce contine stari si costul euristic al fiecarei stari
+
+    while queue:
+        queue.sort(key=lambda x: heuristic(x[0]))  # Sortare in functie de valoarea euristica
+        current_state, depth = queue.pop(0)
+
+        if is_goal_state(current_state):
+            print(current_state)
+            print("Solution found")
+            return True
+
+        if depth < 50: #evitarea buclelor infinite
+            visited_states.add(tuple(map(tuple, current_state)))
+            for direction in ["up", "down", "left", "right"]:
+                new_state = move(list(map(list, current_state)), direction)
+                if tuple(map(tuple, new_state)) not in visited_states:
+                    queue.append((new_state, depth + 1))
+
+    print("Solution not found")
+    return False
+
+print("Using Manhattan Distance Heuristic:")
+greedy_best_search(initial_state, manhattan_distance)
+
+print("\nUsing Hamming Distance Heuristic:")
+greedy_best_search(initial_state, hamming_distance)
+
+print("\nUsing Max Swap Heuristic:")
+greedy_best_search(initial_state, max_swap)
