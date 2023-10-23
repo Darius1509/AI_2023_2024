@@ -1,4 +1,5 @@
 import time as time
+import heapq
 #1.
 #For the first task, we've set upon using a 3x3 matrix to represent our data structure.
 #In regards to the fact that we cannot go back to the previous state, we will memorize the value
@@ -242,4 +243,59 @@ def run_all_strategies(initial_state, max_depth):
     greedy_best_search(initial_state, max_swap)
     print("Time elapsed: ", time.time() - start_time)
 
+print("Initial state 1:")
 run_all_strategies(initial_state, 50)
+
+print("\nInitial state 2:")
+run_all_strategies(initial_state1, 50)
+
+print("\nInitial state 3:")
+run_all_strategies(initial_state2, 50)
+
+#7
+def astar_search(initial_state, heuristic):
+    visited_states = set()
+    open_list = []
+
+    initial_node = (initial_state, None, 0, heuristic(initial_state))
+    heapq.heappush(open_list, (initial_node[2] + initial_node[3], initial_node))
+
+    while open_list:
+        _, current_node = heapq.heappop(open_list)
+        current_state, parent, g_cost, _ = current_node
+
+        if is_goal_state(current_state):
+            # Reconstruct and print the path to the goal state
+            path = []
+            while current_node:
+                path.append(current_node[0])
+                current_node = current_node[1]
+            path.reverse()
+            print("Solution found")
+            print("Number of states visited: ", len(open_list))
+            return True
+        visited_states.add(tuple(map(tuple, current_state)))
+        for direction in ["up", "down", "left", "right"]:
+            new_state = move(list(map(list, current_state)), direction)
+            if tuple(map(tuple, new_state)) not in visited_states:
+                new_node = (new_state, current_node, g_cost + 1, heuristic(new_state))
+                heapq.heappush(open_list, (new_node[2] + new_node[3], new_node))
+
+    print("Solution not found")
+    print("Number of states visited: ", len(open_list))
+    return False
+def run_astar_search(initial_state, heuristic):
+    print("\nRunning A* search...")
+    start_time = time.time()
+    print(f"Using {heuristic.__name__} Heuristic:")
+    astar_search(initial_state, heuristic)
+    print("Time elapsed: ", time.time() - start_time)
+
+print("Initial state 1:")
+run_astar_search(initial_state, manhattan_distance)
+
+print("\nInitial state 2:")
+run_astar_search(initial_state1, manhattan_distance)
+
+print("\nInitial state 3:")
+run_astar_search(initial_state2, manhattan_distance)
