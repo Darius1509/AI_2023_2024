@@ -1,3 +1,4 @@
+import time as time
 #1.
 #For the first task, we've set upon using a 3x3 matrix to represent our data structure.
 #In regards to the fact that we cannot go back to the previous state, we will memorize the value
@@ -97,11 +98,14 @@ def IDDFS(src, max_depth):
     for depth in range(max_depth + 1):
         visited_states = set()
         if DLS(src, depth, visited_states):
+            print("Number of states visited: ", len(visited_states))
             return True
+    print("Number of states visited: ", len(visited_states))
     return False
 
 def DLS(src, depth, visited):
     if depth == 0 and is_goal_state(src):
+        print(src)
         return True
     if depth > 0:
         visited.add(tuple(map(tuple, src)))  # Add the state (as a tuple) to the visited set
@@ -181,6 +185,7 @@ def max_swap(state):
     return max_swaps
 
 def greedy_best_search(state, heuristic):
+    states_count = 0
     visited_states = set()
     queue = [(state, 0)]  # Coada ce contine stari si costul euristic al fiecarei stari
 
@@ -191,23 +196,50 @@ def greedy_best_search(state, heuristic):
         if is_goal_state(current_state):
             print(current_state)
             print("Solution found")
+            print("Number of states visited: ", len(queue))
             return True
-
         if depth < 50: #evitarea buclelor infinite
             visited_states.add(tuple(map(tuple, current_state)))
             for direction in ["up", "down", "left", "right"]:
                 new_state = move(list(map(list, current_state)), direction)
                 if tuple(map(tuple, new_state)) not in visited_states:
                     queue.append((new_state, depth + 1))
+                    states_count += 1
+
 
     print("Solution not found")
+    print("Number of states visited: ", len(queue))
     return False
 
-print("Using Manhattan Distance Heuristic:")
-greedy_best_search(initial_state, manhattan_distance)
+# print("Using Manhattan Distance Heuristic:")
+# greedy_best_search(initial_state, manhattan_distance)
+#
+# print("\nUsing Hamming Distance Heuristic:")
+# greedy_best_search(initial_state, hamming_distance)
+#
+# print("\nUsing Max Swap Heuristic:")
+# greedy_best_search(initial_state, max_swap)
 
-print("\nUsing Hamming Distance Heuristic:")
-greedy_best_search(initial_state, hamming_distance)
+#6
+def run_all_strategies(initial_state, max_depth):
+    start_time = time.time()
+    print("Using IDDFS:")
+    run(initial_state, max_depth)
+    print("Time elapsed: ", time.time() - start_time)
 
-print("\nUsing Max Swap Heuristic:")
-greedy_best_search(initial_state, max_swap)
+    start_time = time.time()
+    print("\nUsing Manhattan Distance Heuristic:")
+    greedy_best_search(initial_state, manhattan_distance)
+    print("Time elapsed: ", time.time() - start_time)
+
+    start_time = time.time()
+    print("\nUsing Hamming Distance Heuristic:")
+    greedy_best_search(initial_state, hamming_distance)
+    print("Time elapsed: ", time.time() - start_time)
+
+    start_time = time.time()
+    print("\nUsing Max Swap Heuristic:")
+    greedy_best_search(initial_state, max_swap)
+    print("Time elapsed: ", time.time() - start_time)
+
+run_all_strategies(initial_state, 50)
