@@ -197,7 +197,7 @@ def greedy_best_search(state, heuristic):
         if is_goal_state(current_state):
             print(current_state)
             print("Solution found")
-            print("Number of states visited: ", len(queue))
+            print("Number of states visited: ", len(visited_states))
             return True
         if depth < 50: #evitarea buclelor infinite
             visited_states.add(tuple(map(tuple, current_state)))
@@ -209,7 +209,7 @@ def greedy_best_search(state, heuristic):
 
 
     print("Solution not found")
-    print("Number of states visited: ", len(queue))
+    print("Number of states visited: ", len(visited_states))
     return False
 
 # print("Using Manhattan Distance Heuristic:")
@@ -272,7 +272,7 @@ def astar_search(initial_state, heuristic):
                 current_node = current_node[1]
             path.reverse()
             print("Solution found")
-            print("Number of states visited: ", len(open_list))
+            print("Number of states visited: ", len(visited_states))
             return True
         visited_states.add(tuple(map(tuple, current_state)))
         for direction in ["up", "down", "left", "right"]:
@@ -282,7 +282,7 @@ def astar_search(initial_state, heuristic):
                 heapq.heappush(open_list, (new_node[2] + new_node[3], new_node))
 
     print("Solution not found")
-    print("Number of states visited: ", len(open_list))
+    print("Number of states visited: ", len(visited_states))
     return False
 def run_astar_search(initial_state, heuristic):
     print("\nRunning A* search...")
