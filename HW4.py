@@ -14,6 +14,34 @@ def puzzle(a):
             print(a[i][j], end=" ")
         print()
 
+#functia de validare a starii
+def is_valid_state(state, even_positions):
+    #dimensiunea matricei trebuie să fie 9x9
+    if len(state) != 9 or any(len(row) != 9 for row in state):
+        return False
+
+    #trebuie sa ne asiguram ca matricea nu are doar 0-uri
+    #si ca nu este deja completata
+    numbers = set()
+    flag = False
+    for row in state:
+        for num in row:
+            if num in range(10):
+                flag = True
+    if flag == False:
+        return False
+    if(is_goal_state(state, even_positions)):
+        return False
+    #verificam daca numerele de pe pozitiile din even_positions sunt pare sau 0
+    for i, j in even_positions:
+        if state[i][j] % 2 != 0 and state[i][j] != 0:
+            return False
+    return True
+
+def is_goal_state(matrix, even_numbers):
+    numbers = [element for row in matrix for element in row if element != 0]
+    return numbers == list(range(1, len(numbers) + 1)) and all(matrix[i][j] % 2 == 0 for i, j in even_numbers)
+
 #functie de verificare a validitatii unei asignari
 def is_valid_assignment(grid, row, col, num, even_positions):
     for x in range(M):
@@ -116,8 +144,9 @@ grid = [[8, 4, 0, 0, 5, 0, 0, 0, 0],
 domain = [[set(range(1, 10)) for _ in range(M)] for _ in range(M)]
 
 #rulare
-if Sudoku(grid, even, domain):
-    puzzle(grid)
-else:
-    print("Solution does not exist :(")
+if is_valid_state(grid, even):
+    if Sudoku(grid, even, domain):
+        puzzle(grid)
+    else:
+        print("Solution does not exist :(")
 
