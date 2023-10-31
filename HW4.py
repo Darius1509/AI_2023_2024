@@ -99,6 +99,7 @@ def Sudoku(grid, even_positions, domain):
 
     return False
 
+#exemplu de rulare
 even = [(0, 6), (2, 2), (2, 8), (3, 4), (4, 3), (4, 5), (5, 4), (6, 0), (6, 6), (8, 2)]
 
 grid = [[8, 4, 0, 0, 5, 0, 0, 0, 0],
@@ -111,9 +112,10 @@ grid = [[8, 4, 0, 0, 5, 0, 0, 0, 0],
         [0, 3, 0, 1, 0, 6, 0, 0, 7],
         [0, 0, 0, 0, 2, 0, 0, 1, 3]]
 
-# Initialize domain for each cell
+#initializarea domeniului
 domain = [[set(range(1, 10)) for _ in range(M)] for _ in range(M)]
 
+#rulare
 if Sudoku(grid, even, domain):
     puzzle(grid)
 else:
