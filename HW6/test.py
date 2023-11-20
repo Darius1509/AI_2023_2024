@@ -55,7 +55,8 @@ def softMax_derivative(x):
 def error(output, target):
     return output - target
 
-def forward_propagation(seed, neural_network_params):
+#4+5
+def back_propagation(seed, neural_network_params, learn_rate=0.01):
     # Unpack neural network parameters
     weights_1 = neural_network_params.get('weights_1')
     bias_1 = neural_network_params.get('bias_1')
@@ -69,13 +70,38 @@ def forward_propagation(seed, neural_network_params):
     output_pre = bias_2 + weights_2.dot(hidden)
     output = softMax(output_pre)
 
-    return hidden, output
+    # Compute error
+    error = output - lbl
 
-#4
-for epoch in range(neural_network_params.get('epochs')):
+    # Backward propagation
+    gradient = error * softMax_derivative(output_pre)
+    weights_2 -= learn_rate * gradient.dot(np.transpose(hidden))
+    bias_2 -= learn_rate * gradient
+
+    gradient = np.transpose(weights_2).dot(gradient) * softMax_derivative(hidden_pre)
+    weights_1 -= learn_rate * gradient.dot(np.transpose(seed))
+    bias_1 -= learn_rate * gradient
+
+#6
+epochs = neural_network_params.get('epochs')
+for epoch in range(epochs):
     # Iterate over training samples
     for seed, lbl in zip(train_features, train_labels):
         seed.shape += (1,)
         lbl.shape += (1,)
+        back_propagation(seed, neural_network_params)
+    if epoch % 5 == 0:
+        print('Epoch: ', epoch)
 
-        forward_propagation(seed, neural_network_params)
+correct_cases = 0
+for seed, lbl in zip(test_features, test_labels):
+    seed.shape += (1,)
+    lbl.shape += (1,)
+    hidden_pre = neural_network_params.get('bias_1') + neural_network_params.get('weights_1').dot(seed)
+    hidden = softMax(hidden_pre)
+    output_pre = neural_network_params.get('bias_2') + neural_network_params.get('weights_2').dot(hidden)
+    output = softMax(output_pre)
+    if np.argmax(output) == np.argmax(lbl):
+        correct_cases += 1
+#print in percent, with no decimals, the accuracy of the model on the test set
+print('Accuracy: ', round((correct_cases / test_features.shape[0]) * 100, 2), '%')
